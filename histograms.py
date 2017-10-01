@@ -50,7 +50,7 @@ class Listogram(list):
 
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
-        new_word_list = []
+        new_word_list = self
 
         for item in iterable:
             if item in new_word_list:
@@ -79,12 +79,10 @@ class Listogram(list):
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
         # TODO: check if item is in histogram
-        for thing in self:
-            print(thing)
-            if isinstance(thing, tuple):
-                return True
-        return False
+        if any(item in thing for thing in self):
+            return True
 
+        return False
 
     def _index(self, target):
         """Return the index of the (target, count) entry if found, or None"""
