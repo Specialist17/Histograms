@@ -1,7 +1,7 @@
 #!python
 
-
 from __future__ import division, print_function
+from operator import itemgetter
 
 
 class Dictogram(dict):
@@ -18,11 +18,23 @@ class Dictogram(dict):
         """Update this histogram with the items in the given iterable"""
         for item in iterable:
             # TODO: increment item count
+            if item in self:
+                self.tokens += 1
+                self[item] += 1
+            else:
+                self.tokens += 1
+                self.types += 1
+                self[item] = 1
             pass
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
         # TODO: retrieve item count
+        if item in self:
+            return self[item]
+        else:
+            return 0
+
         pass
 
 
@@ -38,23 +50,46 @@ class Listogram(list):
 
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
+        new_word_list = []
+
         for item in iterable:
-            # TODO: increment item count
-            pass
+            if item in new_word_list:
+                self.tokens += 1
+                word_index = new_word_list.index(item)
+                new_word_list[word_index + 1] += 1
+            else:
+                self.tokens += 1
+                self.types += 1
+                new_word_list.append(item)
+                new_word_list.append(1)
+
+        for x in range(0, len(new_word_list), 2):
+            self.append(tuple([new_word_list[x], new_word_list[x+1]]))
+        print(self)
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
         # TODO: retrieve item count
-        pass
+        for thing in self:
+            if isinstance(item, int):
+                return thing
+
+        return ("nothing", 0)
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
         # TODO: check if item is in histogram
-        pass
+        for thing in self:
+            print(thing)
+            if isinstance(thing, tuple):
+                return True
+        return False
+
 
     def _index(self, target):
         """Return the index of the (target, count) entry if found, or None"""
         # TODO: implement linear search to find an item's index
+
         pass
 
 
@@ -62,9 +97,11 @@ def test_histogram(text_list):
     print('text list:', text_list)
 
     hist_dict = Dictogram(text_list)
-    print('dictogram:', hist_dict)
+    # print(hist_dict.types)
+    # print('dictogram:', hist_dict)
 
     hist_list = Listogram(text_list)
+    print(hist_list.tokens)
     print('listogram:', hist_list)
 
 
