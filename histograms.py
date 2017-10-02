@@ -50,36 +50,51 @@ class Listogram(list):
 
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
-        new_word_list = self
+        new_word_list = []
 
         for item in iterable:
-            if item in new_word_list:
+            # if item in new_word_list:
+            #     self.tokens += 1
+            #     word_index = new_word_list.index(item)
+            #     new_word_list[word_index + 1] += 1
+            # else:
+            #     self.tokens += 1
+            #     self.types += 1
+            #     new_word_list.append(item)
+            #     new_word_list.append(1)
+
+            # for x in range(0, len(new_word_list), 2):
+            #     self.append(tuple([new_word_list[x], new_word_list[x+1]]))
+            if self.__contains__(item):
                 self.tokens += 1
-                word_index = new_word_list.index(item)
-                new_word_list[word_index + 1] += 1
+                word_index = self._index(item)
+                current_item = self.pop(word_index)
+                current_count = current_item[1] + 1
+                self.insert(word_index, (item, current_count))
+                print("index: " + str(word_index))
+                print("current item: " + str(current_item))
             else:
                 self.tokens += 1
                 self.types += 1
-                new_word_list.append(item)
-                new_word_list.append(1)
+                self.append((item, 1))
 
-        for x in range(0, len(new_word_list), 2):
-            self.append(tuple([new_word_list[x], new_word_list[x+1]]))
         print(self)
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
         # TODO: retrieve item count
-        for thing in self:
-            if isinstance(item, int):
-                return thing
+        if any(item in code for code in self):
+            word_index = self._index(item)
+            current_item = self[word_index]
+            current_count = current_item[1]
+            return current_count
 
-        return ("nothing", 0)
+        return 0
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
         # TODO: check if item is in histogram
-        if any(item in thing for thing in self):
+        if any(item in code for code in self):
             return True
 
         return False
@@ -87,8 +102,8 @@ class Listogram(list):
     def _index(self, target):
         """Return the index of the (target, count) entry if found, or None"""
         # TODO: implement linear search to find an item's index
-
-        pass
+        indices = next((i for i, v in enumerate(self) if v[0] == target), -1)
+        return indices
 
 
 def test_histogram(text_list):
@@ -101,6 +116,9 @@ def test_histogram(text_list):
     hist_list = Listogram(text_list)
     print(hist_list.tokens)
     print('listogram:', hist_list)
+    print(hist_list.__contains__('fish'))
+    print(hist_list._index('blue'))
+    print(hist_list.count('fish'))
 
 
 def read_from_file(filename):
